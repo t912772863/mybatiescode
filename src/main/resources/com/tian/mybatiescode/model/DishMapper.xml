@@ -1,0 +1,175 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.tian.mybatiescode.model.DishMapper" >
+  <!--
+  resultMap中:
+  extends属性: 选填, 可以配置当前的resultMap继承自其它的resultMap, 属性值为继承的resultMap的id
+  autoMapping属性: 选填true,false. 用于配置是否启用非映射字段(没有在resultMap中配置的字段)的自动
+      映射功能, 该配置可以覆盖全局的autoMappingBehavior配置.
+
+  resultMap内包含的元素:
+  constructor标签: 配置使用构造方法注入结果,
+  id标签: 一个id结果, 标记结果做为id(唯一值), 可以帮助提高性能.
+  result标签: 注入到java对象属性的普通结果.
+  association标签: 一个复杂的类型关联, 许多结果将包成这种类型.
+  collection标签: 复杂类型的集合.
+  discriminator标签: 根据结果值来决定使用哪个结果映射.
+  -->
+  <resultMap id="BaseResultMap" type="com.tian.mybatiescode.model.Dish">
+    <!--id标签可以用于嵌套查询时, 确定数据的唯一标识,提高嵌套查询(一对多)时的映射效率-->
+    <id column="ID" property="id" jdbcType="VARCHAR" />
+    <result column="CLASS_ID" property="classId" jdbcType="VARCHAR" />
+    <result column="PREPARE_TIME" property="prepareTime" jdbcType="VARCHAR" />
+    <result column="NAME" property="name" jdbcType="VARCHAR" />
+    <result column="PIC" property="pic" jdbcType="VARCHAR" />
+    <result column="TAG" property="tag" jdbcType="VARCHAR" />
+    <result column="PEOPLE_NUM" property="peopleNum" jdbcType="VARCHAR" />
+    <result column="CONTENT" property="content" jdbcType="VARCHAR" />
+    <result column="COOKING_TIME" property="cookingTime" jdbcType="VARCHAR" />
+  </resultMap>
+
+  <resultMap id="resultMap2" extends="BaseResultMap" type="com.tian.mybatiescode.model.Dish">
+    <!--添加一个一对多的映射, 用来关联查询出一对多的关系-->
+    <collection property="dishMaterialList" columnPrefix="material_"
+                resultMap="com.tian.mybatiescode.model.DishMaterialMapper.BaseResultMap">
+    </collection>
+  </resultMap>
+
+  <resultMap id="resultMap3" extends="BaseResultMap" type="com.tian.mybatiescode.model.Dish">
+    <collection property="dishMaterialList" column="{dishId = id}"
+                select="com.tian.mybatiescode.model.DishMaterialMapper.queryByDishId"/>
+  </resultMap>
+
+  <resultMap id="chooseResultMap" type="com.tian.mybatiescode.model.Dish">
+    <!--示例增加一个鉴别器映射:
+     根据某一个字段查询出来的不同的值,住不同的resultMap上映射,比如查出某个数据状态为删除,就不再查询出关联数据了,
+     如果是正常,则同时查询出关联查询数据
+    -->
+    <discriminator javaType="int" column="CLASS_ID">
+      <case value="6" resultMap="resultMap3"></case>
+      <case value="2" resultMap="BaseResultMap"/>
+    </discriminator>
+
+  </resultMap>
+
+  <insert id="insertSelective" parameterType="com.tian.mybatiescode.model.Dish" >
+    insert into dish
+    <trim prefix="(" suffix=")" suffixOverrides="," >
+      <if test="classId != null" >
+        CLASS_ID,
+      </if>
+      <if test="prepareTime != null" >
+        PREPARE_TIME,
+      </if>
+      <if test="name != null" >
+        NAME,
+      </if>
+      <if test="id != null" >
+        ID,
+      </if>
+      <if test="pic != null" >
+        PIC,
+      </if>
+      <if test="tag != null" >
+        TAG,
+      </if>
+      <if test="peopleNum != null" >
+        PEOPLE_NUM,
+      </if>
+      <if test="content != null" >
+        CONTENT,
+      </if>
+      <if test="cookingTime != null" >
+        COOKING_TIME,
+      </if>
+    </trim>
+    <trim prefix="values (" suffix=")" suffixOverrides="," >
+      <if test="classId != null" >
+        #{classId,jdbcType=VARCHAR},
+      </if>
+      <if test="prepareTime != null" >
+        #{prepareTime,jdbcType=VARCHAR},
+      </if>
+      <if test="name != null" >
+        #{name,jdbcType=VARCHAR},
+      </if>
+      <if test="id != null" >
+        #{id,jdbcType=VARCHAR},
+      </if>
+      <if test="pic != null" >
+        #{pic,jdbcType=VARCHAR},
+      </if>
+      <if test="tag != null" >
+        #{tag,jdbcType=VARCHAR},
+      </if>
+      <if test="peopleNum != null" >
+        #{peopleNum,jdbcType=VARCHAR},
+      </if>
+      <if test="content != null" >
+        #{content,jdbcType=VARCHAR},
+      </if>
+      <if test="cookingTime != null" >
+        #{cookingTime,jdbcType=VARCHAR},
+      </if>
+    </trim>
+  </insert>
+
+  <select id="queryById" resultMap="BaseResultMap">
+     select * from dish where ID = #{id}
+  </select>
+
+  <select id="queryByName" resultMap="BaseResultMap">
+     select * from dish where NAME = #{name}
+  </select>
+
+  <select id="queryAllDishName" resultType="string">
+     select DISTINCT NAME from dish;
+  </select>
+
+  <select id="selectAll" resultMap="BaseResultMap">
+     select * from Dish
+  </select>
+
+  <select id="queryByNameLike" resultMap="BaseResultMap">
+    select * from dish
+    <where>
+      <choose>
+        <when test="name != null and name != ''">
+          <bind name="likeName" value="'%'+name+'%'"/>
+          and NAME like #{likeName}
+        </when>
+        <otherwise>
+          and 1=2
+        </otherwise>
+      </choose>
+    </where>
+  </select>
+  
+  <select id="testCheckNameLength" resultMap="BaseResultMap">
+    SELECT * from dish
+    <where>
+      <choose>
+        <when test="@com.tian.mybatiescode.model.Dish@checkName(name)">
+          and NAME like concat('%',#{name},'%')
+        </when>
+        <otherwise>
+          and 1 =  2
+        </otherwise>
+      </choose>
+    </where>
+  </select>
+
+  <select id="queryByIdWithMaterial" resultMap="resultMap2">
+    select a.CLASS_ID, a.PREPARE_TIME, a.NAME, a.ID, a.PIC, a.TAG, a.PEOPLE_NUM, a.CONTENT,
+      a.COOKING_TIME, b.DISH_ID material_dish_id, b.AMOUNT material_amount, b.NAME material_name,
+      b.TYPE material_type from dish a LEFT join dish_material b
+      on a.id = b.dish_id
+    where a.ID = #{id}
+  </select>
+
+  <select id="queryByIdWithMaterial2" resultMap="resultMap3">
+    select CLASS_ID, PREPARE_TIME, NAME, ID, PIC, TAG, PEOPLE_NUM, CONTENT,
+      COOKING_TIME  from dish
+    where ID = #{id}
+  </select>
+</mapper>

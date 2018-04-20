@@ -1,0 +1,51 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.tian.mybatiescode.model.DishMaterialMapper">
+  <resultMap id="BaseResultMap" type="com.tian.mybatiescode.model.DishMaterial">
+    <result column="DISH_ID" jdbcType="VARCHAR" property="dishId" />
+    <result column="AMOUNT" jdbcType="VARCHAR" property="amount" />
+    <result column="NAME" jdbcType="VARCHAR" property="name" />
+    <result column="TYPE" jdbcType="VARCHAR" property="type" />
+  </resultMap>
+  <insert id="insert" parameterType="com.tian.mybatiescode.model.DishMaterial">
+    insert into dish_material (DISH_ID, AMOUNT, NAME, 
+      TYPE)
+    values (#{dishId,jdbcType=VARCHAR}, #{amount,jdbcType=VARCHAR}, #{name,jdbcType=VARCHAR}, 
+      #{type,jdbcType=VARCHAR})
+  </insert>
+  <insert id="insertSelective" parameterType="com.tian.mybatiescode.model.DishMaterial">
+    insert into dish_material
+    <trim prefix="(" suffix=")" suffixOverrides=",">
+      <if test="dishId != null">
+        DISH_ID,
+      </if>
+      <if test="amount != null">
+        AMOUNT,
+      </if>
+      <if test="name != null">
+        NAME,
+      </if>
+      <if test="type != null">
+        TYPE,
+      </if>
+    </trim>
+    <trim prefix="values (" suffix=")" suffixOverrides=",">
+      <if test="dishId != null">
+        #{dishId,jdbcType=VARCHAR},
+      </if>
+      <if test="amount != null">
+        #{amount,jdbcType=VARCHAR},
+      </if>
+      <if test="name != null">
+        #{name,jdbcType=VARCHAR},
+      </if>
+      <if test="type != null">
+        #{type,jdbcType=VARCHAR},
+      </if>
+    </trim>
+  </insert>
+
+  <select id="queryByDishId" resultMap="BaseResultMap">
+    select * from dish_material where DISH_ID = #{dishId}
+  </select>
+</mapper>

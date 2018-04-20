@@ -1,0 +1,116 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.tian.mybatiescode.model.TestMapper" >
+
+  <!--引用缓存标签, 可以引用其它xml文件的缓存对象-->
+  <!--<cache-ref namespace=""/>-->
+
+  <!--缓存标签, 对每个xml文件可以创建一个缓存对象-->
+  <!--<cache blocking="" eviction="LRU" flushInterval="" readOnly="" size="" type="PERPETUAL"/>-->
+
+  <!--参数映射标签-->
+  <!--<parameterMap id="" type="">
+    <parameter property=""/>
+  </parameterMap>-->
+
+  <!--结果集映射标签
+   extends: 继承自哪个映射关系
+  -->
+  <resultMap id="BaseResultMap" type="com.tian.mybatiescode.model.Test" autoMapping="true">
+    <!--映射生成对象的时候可以指定构造方法-->
+    <!--<constructor>
+      <idArg select=""></idArg>
+      <arg select=""></arg>
+    </constructor>-->
+
+
+    <id column="id" property="id" javaType="long" jdbcType="BIGINT" />
+    <result column="test" property="test" jdbcType="VARCHAR" />
+    <result column="user_id" property="userId" jdbcType="BIGINT" />
+
+    <!--复杂的嵌套映射
+    notNullColumn: 只有在至少有一个非空列映射到子对象的属性时，才创建一个默认的子对象。通过这个属性，我们可以设置哪一个列必须有值来改变这个行为，此时的Mybatis就会按照这个非空设置来创建一个子对象。多个列存在时，可以通过逗号作为分割符。默认情况下，该属性是不会被设置的，即unset
+    -->
+    <!--<association property="" autoMapping="true" javaType="" column="" columnPrefix=""
+                 fetchType="lazy" foreignColumn="" jdbcType="" notNullColumn=""
+                 resultMap="" resultSet="" select="" typeHandler="">
+      <constructor></constructor>
+      <id></id>
+      <result></result>
+    </association>-->
+
+    <!--鉴别器, 处理结果集的时候会用到, 不指定则用默认的-->
+   <!-- <discriminator javaType="">
+      <case value=""></case>
+    </discriminator>-->
+  </resultMap>
+
+  <!--sql语句片断
+   id: 片断的标识
+   databaseId: 该片断对应用于哪个数据源
+  -->
+  <sql id="Base_Column_List">
+    id, test, user_id
+  </sql>
+
+  <!--select标签, 用于查询语句
+  lang: 用于指定解析sql的解析器
+  -->
+  <select id="selectByPrimaryKey" resultMap="BaseResultMap">
+    select 
+    <include refid="Base_Column_List" />
+    from test
+    where id = #{id,jdbcType=BIGINT}
+  </select>
+  <delete id="deleteByPrimaryKey" parameterType="java.lang.Long" >
+    delete from test
+    where id = #{id,jdbcType=BIGINT}
+  </delete>
+  <insert id="insert" parameterType="com.tian.mybatiescode.model.Test" >
+    insert into test (id, test,user_id)
+    values (#{id,jdbcType=BIGINT}, #{test,jdbcType=VARCHAR}, #{userId})
+  </insert>
+  <insert id="insertSelective" parameterType="com.tian.mybatiescode.model.Test" >
+    insert into test
+    <trim prefix="(" suffix=")" suffixOverrides="," >
+      <if test="id != null" >
+        id,
+      </if>
+      <if test="test != null" >
+        test,
+      </if>
+      <if test="userId!=null">
+        user_id,
+      </if>
+    </trim>
+    <trim prefix="values (" suffix=")" suffixOverrides="," >
+      <if test="id != null" >
+        #{id,jdbcType=BIGINT},
+      </if>
+      <if test="test != null" >
+        #{test,jdbcType=VARCHAR},
+      </if>
+      <if test="userId != null">
+        #{userId},
+      </if>
+    </trim>
+  </insert>
+  <update id="updateByPrimaryKeySelective" parameterType="com.tian.mybatiescode.model.Test" >
+    update test
+    <set >
+      <if test="test != null" >
+        test = #{test,jdbcType=VARCHAR},
+      </if>
+      <if test="userId != null">
+        user_id = #{userId},
+      </if>
+    </set>
+    where id = #{id,jdbcType=BIGINT}
+  </update>
+  <update id="updateByPrimaryKey" parameterType="com.tian.mybatiescode.model.Test" >
+    update test
+    set test = #{test,jdbcType=VARCHAR}, user_id = #{userId}
+    where id = #{id,jdbcType=BIGINT}
+  </update>
+
+</mapper>

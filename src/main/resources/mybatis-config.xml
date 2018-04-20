@@ -1,0 +1,96 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<!DOCTYPE configuration PUBLIC "-//mybatis.org//DTD Config 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-config.dtd">
+<configuration>
+
+
+    <properties>
+        <property name="myKey" value="myValue"/>
+    </properties>
+    <settings>
+        <!--指定用log4j输出日志-->
+        <setting name="logImpl" value="LOG4J"/>
+
+        <!--启用下划线字段名与驼峰java属性名自动映射, 默认为false-->
+        <setting name="mapUnderscoreToCamelCase" value="true"/>
+        <!--全局配置, 默认加载懒加载的属性-->
+        <setting name="aggressiveLazyLoading" value="false"/>
+        <!--mybatis二级缓存的全局开关, 默认就为true,如果设成false,那么在mapper.xml配置了二级缓存也无效-->
+        <setting name="cacheEnabled" value="true"/>
+    </settings>
+
+    <typeAliases>
+        <typeAlias type="java.lang.Integer" alias="int"/>
+        <!--配置一个包的别名, 对于一些需要写类的全限定名的地方, 前面的包名部分可以省略不写-->
+        <package name="com.tian.mybatiescode"/>
+    </typeAliases>
+
+    <!--配置自定义的处理器-->
+    <!--<typeHandlers>
+        <typeHandler handler="" javaType="" jdbcType=""/>
+        <package name=""/>
+    </typeHandlers>-->
+
+    <!--配置自定义的工厂对象: 实现ObjectFactory接口-->
+    <!--<objectFactory type="">
+        <property name="" value=""/>
+    </objectFactory>-->
+
+    <!--工厂对象的包装器: 实现ObjectWrapperFactory接口-->
+    <!--<objectWrapperFactory type="">
+        <property name="" value=""/>
+    </objectWrapperFactory>-->
+
+    <!--配置一些自己实现的接口插件: 实现Interceptor接口-->
+    <plugins>
+        <!--测试插件-->
+        <plugin interceptor="com.tian.mybatiescode.plugin.TestMybatisPlugin">
+            <property name="key1" value="value1"/>
+        </plugin>
+        <!--下划线转驼峰插件-->
+        <plugin interceptor="com.tian.mybatiescode.plugin.CameHumpInterceptor">
+
+        </plugin>
+    </plugins>
+
+    <!--可以配置多个数据源, 可以指定默认用哪个-->
+    <environments default="development">
+        <environment id="development">
+            <transactionManager type="JDBC">
+                <!--<property name="" value=""/>-->
+            </transactionManager>
+            <dataSource type="UNPOOLED">
+                <property name="driver" value="com.mysql.jdbc.Driver"/>
+                <property name="url" value="jdbc:mysql://localhost:3306/happyfood"/>
+                <property name="username" value="root"/>
+                <property name="password" value="06220724"/>
+            </dataSource>
+        </environment>
+    </environments>
+
+    <!--配置数据库供应商信息, 也就是用一个字符串标识数据源类型
+        DB_VENDOR的匹配策略为,DatabaseMetaData#getDatabaseProductName()返回字符串包含property中name部分的值即可匹配,
+        所以虽然Sql server的全名是Microsoft SQL Server,但是这里只要设置SQL Server就可以匹配,然后在具体的方法中指定
+        databaseId属性, mybatis默认会加载,与当前数据库类型匹配的databaseId的语句,以及没有配置databaseId的语句,如果两
+        个都存在, 没有配置的将会忽略.
+        为了防止书写大量重复的sql语句, 也可在用if标签test = "_databaseId == 'mysql'"这样的方式来实现不同的数据库类型,
+        加载不同的sql语句
+    -->
+    <databaseIdProvider type="DB_VENDOR">
+        <property name="Oracle" value="oracle"/>
+        <property name="MySQL" value="mysql"/>
+    </databaseIdProvider>
+
+    <mappers>
+        <!--一个mapper文件的路径-->
+        <!--<mapper resource="com/tian/mybatiescode/model/DishMapper.xml"/>-->
+
+        <!--直接配置一个路径, 这个路径下所有的xml文件都会加载.
+          这种方式会查找该包路径下所有的接口, 循环对接口进行如下操作.
+          1. 判断接口对应的命名空间是否已经存在, 如果存在就拋出异常,
+          2. 加载接口对应的xml文件, 将接口全限定名, 转换为路径, 拼上.xml, 如果找到就解析
+          3. 处理接口中的注解方法
+        -->
+        <package name="com.tian.mybatiescode.model"/>
+    </mappers>
+</configuration>
