@@ -2,6 +2,8 @@ package com.tian.mybatiescode.model;
 
 import org.apache.ibatis.annotations.*;
 
+import java.util.Map;
+
 /**
  * 演示通过注解的方式实现mybatis, 省略xml文件.
  * 这种方式不够灵活, 这里只演示一下, 开发中不建议这样用.
@@ -49,6 +51,9 @@ public interface ButtonMapper {
 
     /**
      * 演示Provider注解的用法
+     *
+     * 这里的PrivilegeProvider为自己定义的一个规则类, queryById4为规则类中的一个方法,
+     * 这里可以通过这种方法, 进行解析, 实现通用的增删改方法
      * @param id
      * @return
      */
@@ -56,5 +61,12 @@ public interface ButtonMapper {
     Button queryById4(Long id);
 
 
+    /**
+     * 测试直接查询返回一个map, 其中用指定的字段为map的key, 一条记录为map的value
+     * @return
+     */
+    @Select("select * from button")
+    @MapKey("id")
+    Map<Long, Button> queryMap();
 
 }

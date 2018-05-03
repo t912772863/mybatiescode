@@ -48,9 +48,9 @@
             <property name="key1" value="value1"/>
         </plugin>
         <!--下划线转驼峰插件-->
-        <plugin interceptor="com.tian.mybatiescode.plugin.CameHumpInterceptor">
+        <!--<plugin interceptor="com.tian.mybatiescode.plugin.CameHumpInterceptor">
 
-        </plugin>
+        </plugin>-->
     </plugins>
 
     <!--可以配置多个数据源, 可以指定默认用哪个-->

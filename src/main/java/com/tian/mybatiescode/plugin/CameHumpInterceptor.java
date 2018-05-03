@@ -1,19 +1,15 @@
 package com.tian.mybatiescode.plugin;
 
-import org.apache.ibatis.executor.resultset.ResultSetHandler;
 import org.apache.ibatis.plugin.Interceptor;
-import org.apache.ibatis.plugin.Intercepts;
 import org.apache.ibatis.plugin.Invocation;
-import org.apache.ibatis.plugin.Signature;
 
-import java.sql.Statement;
 import java.util.*;
 
 /**
  * map类型下划线, 转小写驼峰形式
  * Created by Administrator on 2018/4/20 0020.
  */
-@Intercepts({@Signature(type = ResultSetHandler.class, method = "handleResultSets", args = {Statement.class})})
+//@Intercepts({@Signature(type = ResultSetHandler.class, method = "handleResultSets", args = {Statement.class})})
 public class CameHumpInterceptor implements Interceptor{
     public Object intercept(Invocation invocation) throws Throwable {
         // 先得到执行结果, 这里的强制转换, 是因为所拦截的方法的返回类型为这个类型

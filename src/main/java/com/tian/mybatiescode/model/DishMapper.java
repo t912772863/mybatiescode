@@ -1,8 +1,11 @@
 package com.tian.mybatiescode.model;
 
+import org.apache.ibatis.annotations.MapKey;
 import org.apache.ibatis.annotations.Param;
+import org.apache.ibatis.annotations.Select;
 
 import java.util.List;
+import java.util.Map;
 import java.util.Set;
 
 public interface DishMapper {
@@ -45,5 +48,9 @@ public interface DishMapper {
      * @return
      */
     Dish queryByIdWithMaterial2(Long id);
+
+    @Select("select * from dish")
+    @MapKey("id")
+    Map<String, Dish> queryMap();
 
 }

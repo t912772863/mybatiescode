@@ -3,6 +3,7 @@ package com.tian.mybatiescode.model;
 import org.apache.ibatis.session.SqlSession;
 
 import java.util.Date;
+import java.util.Map;
 
 import static com.tian.mybatiescode.model.DishMapperTest.getSqlSession;
 
@@ -51,5 +52,11 @@ public class ButtonMapperTest {
         SqlSession sqlSession = getSqlSession();
         Button button = sqlSession.getMapper(ButtonMapper.class).queryById4(1L);
         System.out.println(button);
+    }
+
+    public static void  test6(){
+        SqlSession sqlSession = getSqlSession();
+        Map<Long, Button> buttonMap = sqlSession.getMapper(ButtonMapper.class).queryMap();
+        System.out.println(buttonMap);
     }
 }

@@ -172,4 +172,5 @@
       COOKING_TIME  from dish
     where ID = #{id}
   </select>
+
 </mapper>
