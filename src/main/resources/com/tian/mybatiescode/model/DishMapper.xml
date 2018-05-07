@@ -173,4 +173,7 @@
     where ID = #{id}
   </select>
 
+  <select id="queryMap2" resultMap="BaseResultMap">
+    select * from dish
+  </select>
 </mapper>

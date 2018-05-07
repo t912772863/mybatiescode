@@ -49,8 +49,22 @@ public interface DishMapper {
      */
     Dish queryByIdWithMaterial2(Long id);
 
+    /**
+     * 一个mapper接口中即可以有xml映射, 也可以有注解方法, 但是方法名不能重复
+     * @return
+     */
     @Select("select * from dish")
     @MapKey("id")
     Map<String, Dish> queryMap();
+
+    /**
+     * 这个方法和上面的方法功能是一样的, 区别在于, 上面的方法sql语句是通过注解方法指定的.
+     * 而这个方法中sql语句是使用我们最常用的xml中指定的. 需要
+     * 特别注意: 本方法返回的是一个map, 但是xml中的方法中result的类型是map中value的类型,
+     *           map中key, 为MapKey注解中指定的字段的值
+     * @return
+     */
+    @MapKey("id")
+    Map<String, Dish> queryMap2();
 
 }

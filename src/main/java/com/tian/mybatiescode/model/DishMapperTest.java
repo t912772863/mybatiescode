@@ -18,7 +18,7 @@ public class DishMapperTest {
     private static SqlSessionFactory sqlSessionFactory;
 
     public static void main(String[] args) throws IOException {
-        test7();
+        test8();
 
 
     }
@@ -90,6 +90,13 @@ public class DishMapperTest {
         SqlSession sqlSession = getSqlSession();
         DishMapper dishMapper = sqlSession.getMapper(DishMapper.class);
         Map<String, Dish> dishMap = dishMapper.queryMap();
+        System.out.println(dishMap);
+    }
+
+    public static void test8() {
+        SqlSession sqlSession = getSqlSession();
+        DishMapper dishMapper = sqlSession.getMapper(DishMapper.class);
+        Map<String, Dish> dishMap = dishMapper.queryMap2();
         System.out.println(dishMap);
     }
 
